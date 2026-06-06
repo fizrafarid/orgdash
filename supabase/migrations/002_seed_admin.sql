@@ -1,0 +1,30 @@
+-- ============================================================
+-- Migration: 002_seed_admin
+-- Purpose:   Promote a signed-up user to admin
+--
+-- HOW TO USE
+-- ----------
+-- 1. Sign up a user through your app (or via Supabase Auth UI).
+-- 2. Find their UUID in the Supabase dashboard:
+--      Authentication → Users → copy the user's UUID
+-- 3. Open the SQL Editor in your Supabase dashboard and run:
+--
+--      UPDATE public.profiles
+--      SET is_admin = true
+--      WHERE id = '<paste-user-uuid-here>';
+--
+-- Example (replace the UUID with a real one):
+--
+--      UPDATE public.profiles
+--      SET is_admin = true
+--      WHERE id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+--
+-- Verification — confirm the change took effect:
+--
+--      SELECT id, full_name, is_admin
+--      FROM public.profiles
+--      WHERE id = '<paste-user-uuid-here>';
+--
+-- NOTE: Only users with is_admin = true can create organizations.
+--       All other users can only view/update their own profile.
+-- ============================================================

@@ -14,12 +14,12 @@ export interface Organization {
 export interface OrgMember {
   id: string
   organization_id: string
-  user_id: string
+  user_id: string | null
   email: string
   status: 'invited' | 'active'
   role: 'admin' | 'member'
   invited_at: string
-  joined_at?: string
+  joined_at?: string | null
 }
 
 export interface Profile {

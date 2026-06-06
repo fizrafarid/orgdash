@@ -80,7 +80,8 @@ The function uses `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, which Supabase
 
 ## Test Credentials
 
-See submission email.
+**Email:** admin@test.com  
+**Password:** Admin1234!
 
 ## What I'd Do With Another Day
 

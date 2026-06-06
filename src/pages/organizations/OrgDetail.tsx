@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, UserPlus } from 'lucide-react'
+import { ArrowLeft, RefreshCw, UserPlus } from 'lucide-react'
 import { useOrganization } from '@/hooks/useOrganizations'
 import { useMembers, useInviteMember } from '@/hooks/useMembers'
 import { InviteMemberSchema, type InviteMemberValues } from '@/schemas'
@@ -138,8 +138,8 @@ function InviteMemberDialog({ open, onOpenChange, orgId }: InviteDialogProps) {
 
 // ── Members table ────────────────────────────────────────────────────────────
 
-function MembersTable({ orgId }: { orgId: string }) {
-  const { data: members, isLoading, isError } = useMembers(orgId)
+function MembersTable({ orgId, onInvite }: { orgId: string; onInvite: () => void }) {
+  const { data: members, isLoading, isError, refetch } = useMembers(orgId)
 
   if (isLoading) {
     return (
@@ -157,14 +157,28 @@ function MembersTable({ orgId }: { orgId: string }) {
   }
 
   if (isError) {
-    return <p className="text-sm text-destructive">Failed to load members.</p>
+    return (
+      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center space-y-3">
+        <p className="text-sm font-medium text-destructive">Failed to load members.</p>
+        <Button variant="outline" size="sm" onClick={() => void refetch()}>
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Try again
+        </Button>
+      </div>
+    )
   }
 
   if (!members?.length) {
     return (
-      <p className="text-sm text-muted-foreground">
-        No members yet. Invite someone to get started.
-      </p>
+      <div className="py-8 text-center space-y-3">
+        <p className="text-sm text-muted-foreground">
+          No members yet. Invite someone to get started.
+        </p>
+        <Button size="sm" onClick={onInvite}>
+          <UserPlus className="mr-2 h-4 w-4" />
+          Invite Member
+        </Button>
+      </div>
     )
   }
 
@@ -202,19 +216,33 @@ export default function OrgDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [inviteOpen, setInviteOpen] = useState(false)
-  const { data: org, isLoading, isError } = useOrganization(id ?? '')
+  const { data: org, isLoading, isError, refetch } = useOrganization(id ?? '')
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-64 w-full" />
       </div>
     )
   }
 
   if (isError || !org) {
-    return <p className="text-destructive">Failed to load organization.</p>
+    return (
+      <div className="space-y-4">
+        <Button variant="ghost" size="sm" className="-ml-2" onClick={() => navigate('/organizations')}>
+          <ArrowLeft className="mr-1 h-4 w-4" />
+          Organizations
+        </Button>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center space-y-3">
+          <p className="text-sm font-medium text-destructive">Failed to load organization.</p>
+          <Button variant="outline" size="sm" onClick={() => void refetch()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Try again
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   const conditionalField = (() => {
@@ -235,10 +263,10 @@ export default function OrgDetail() {
       {/* Back + Header */}
       <div className="space-y-2">
         <Button variant="ghost" size="sm" className="-ml-2" onClick={() => navigate('/organizations')}>
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeft className="mr-1 h-4 w-4" />
           Organizations
         </Button>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-900">{org.name}</h1>
           <Badge variant="outline" className={ORG_TYPE_COLORS[org.type]}>
             {ORG_TYPE_LABELS[org.type]}
@@ -246,7 +274,8 @@ export default function OrgDetail() {
         </div>
         {conditionalField && (
           <p className="text-sm text-muted-foreground">
-            {conditionalField.label}: <span className="text-gray-700">{conditionalField.value}</span>
+            {conditionalField.label}:{' '}
+            <span className="text-gray-700">{conditionalField.value}</span>
           </p>
         )}
       </div>
@@ -256,12 +285,12 @@ export default function OrgDetail() {
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>Members</CardTitle>
           <Button size="sm" onClick={() => setInviteOpen(true)}>
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="mr-2 h-4 w-4" />
             Invite Member
           </Button>
         </CardHeader>
         <CardContent>
-          <MembersTable orgId={org.id} />
+          <MembersTable orgId={org.id} onInvite={() => setInviteOpen(true)} />
         </CardContent>
       </Card>
 

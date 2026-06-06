@@ -16,12 +16,12 @@ export const OrganizationSchema = z.object({
 export const OrgMemberSchema = z.object({
   id: z.string(),
   organization_id: z.string(),
-  user_id: z.string(),
+  user_id: z.string().nullable(),
   email: z.string().email('Invalid email address'),
   status: z.enum(['invited', 'active']),
   role: z.enum(['admin', 'member']),
   invited_at: z.string(),
-  joined_at: z.string().optional(),
+  joined_at: z.string().nullable().optional(),
 })
 
 export const ProfileSchema = z.object({

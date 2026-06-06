@@ -5,6 +5,7 @@ import { AuthProvider } from '@/hooks/useAuth'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import AppLayout from '@/components/layout/AppLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
+import { Toaster } from '@/components/ui/toaster'
 import SignIn from '@/pages/auth/SignIn'
 import SignUp from '@/pages/auth/SignUp'
 import Dashboard from '@/pages/dashboard/Dashboard'
@@ -34,6 +35,7 @@ function App() {
               </Route>
             </Route>
           </Routes>
+          <Toaster />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

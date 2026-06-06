@@ -289,11 +289,11 @@ export default function OrgList() {
 
       {/* Error */}
       {isError && (
-        <div className="text-center py-12 space-y-4">
-          <p className="text-destructive font-medium">Failed to load organizations.</p>
-          <Button variant="outline" onClick={() => void refetch()}>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center space-y-3">
+          <p className="text-sm font-medium text-destructive">Failed to load organizations.</p>
+          <Button variant="outline" size="sm" onClick={() => void refetch()}>
             <RefreshCw className="h-4 w-4 mr-2" />
-            Retry
+            Try again
           </Button>
         </div>
       )}

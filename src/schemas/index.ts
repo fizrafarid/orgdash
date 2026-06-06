@@ -87,6 +87,11 @@ export const CreateOrgSchema = z
     }
   })
 
+export const InviteMemberSchema = z.object({
+  email: z.string().email('Invalid email address'),
+})
+
 export type SignInValues = z.infer<typeof SignInSchema>
 export type SignUpFormValues = z.infer<typeof SignUpFormSchema>
 export type CreateOrgValues = z.infer<typeof CreateOrgSchema>
+export type InviteMemberValues = z.infer<typeof InviteMemberSchema>

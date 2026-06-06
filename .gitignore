@@ -4,6 +4,10 @@ node_modules/
 # Build output
 dist/
 dist-ssr/
+.vite/
+
+# Supabase CLI cache
+supabase/.temp/
 
 # Environment variables — never commit real credentials
 .env.local

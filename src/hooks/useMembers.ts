@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { INVITE_FUNCTION_URL } from '@/lib/constants'
 import type { OrgMember } from '@/types'
 
 export function useMembers(orgId: string) {
@@ -26,8 +27,7 @@ export function useInviteMember() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
 
-      const url = import.meta.env.VITE_INVITE_FUNCTION_URL as string
-      const res = await fetch(url, {
+      const res = await fetch(INVITE_FUNCTION_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

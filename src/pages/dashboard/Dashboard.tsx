@@ -7,7 +7,7 @@ import { useOrganizations } from '@/hooks/useOrganizations'
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const { organizations } = useOrganizations()
+  const { data: organizations = [] } = useOrganizations()
 
   return (
     <div className="space-y-6">

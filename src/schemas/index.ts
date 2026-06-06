@@ -47,5 +47,46 @@ export const SignUpFormSchema = z
     path: ['confirmPassword'],
   })
 
+export const CreateOrgSchema = z
+  .object({
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name must be at most 100 characters'),
+    type: OrgTypeSchema,
+    school_district: z.string().optional(),
+    nonprofit_ein: z.string().optional(),
+    business_reg_number: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === 'school' && !data.school_district?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'School district is required for school organizations',
+        path: ['school_district'],
+      })
+    }
+    if (data.type === 'nonprofit') {
+      if (!data.nonprofit_ein?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'EIN is required for nonprofit organizations',
+          path: ['nonprofit_ein'],
+        })
+      } else if (!/^\d{2}-\d{7}$/.test(data.nonprofit_ein)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'EIN must be in the format XX-XXXXXXX (e.g. 12-3456789)',
+          path: ['nonprofit_ein'],
+        })
+      }
+    }
+    if (data.type === 'business' && !data.business_reg_number?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Registration number is required for business organizations',
+        path: ['business_reg_number'],
+      })
+    }
+  })
+
 export type SignInValues = z.infer<typeof SignInSchema>
 export type SignUpFormValues = z.infer<typeof SignUpFormSchema>
+export type CreateOrgValues = z.infer<typeof CreateOrgSchema>
